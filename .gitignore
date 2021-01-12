@@ -1,0 +1,5 @@
+.Trash*
+conf/
+data/
+mysql/
+www/
