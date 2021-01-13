@@ -1,0 +1,8 @@
+.Trash*
+data/
+mysql/
+www/
+ovh-backup/
+conf/*
+!conf/exclude.tar.txt
+!conf/hetzner.txt
