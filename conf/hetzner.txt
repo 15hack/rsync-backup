@@ -3,6 +3,7 @@
 - /home/c*tt*k/***
 - */lost+found/***
 - */.placeholder
+- */.bash_history
 + /root/***
 + /home/***
 + /etc/

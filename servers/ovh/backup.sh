@@ -26,7 +26,7 @@ DBS=($(mysql -N -e "show databases;"))
 for DB in "${DBS[@]}"; do
    if [[ ! $DB =~ ^(mysql|information_schema|performance_schema)$ ]]; then
       echo "mysqldump $DB"
-      mysqldump --opt --add-drop-database --skip-comments --databases "$DB" | gzip -9 > "$TRG/$DATE-$DB.sql.gz"
+      mysqldump --opt --add-drop-database --skip-comments --databases --routines "$DB" | gzip -9 > "$TRG/$DATE-$DB.sql.gz"
    fi
 done
 find "$TRG" -type f -mtime +15 -exec rm {} \;

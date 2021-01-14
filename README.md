@@ -46,33 +46,40 @@ y que no puedo garantizar si es correcto o no.
 Dicho esto, y partiendo de lo único que sabemos (que el backup esta en `/var/lib/vz`)
 sospechamos que:
 
-* en `/var/lib/vz/vzdump/dump` están las configuraciones de las máquinas virtuales comprimidas
+1. en `/var/lib/vz/vzdump/dump` están las configuraciones de las máquinas virtuales comprimidas
 en un fichero `tar.gz` por máquina.
-* en `/var/lib/vz/vzdump/backups` esta una copia de los datos que tienen las máquinas
+2. en `/var/lib/vz/vzdump/mysql` hay copias de seguridad hechas con [`mysqldump`](https://mariadb.com/kb/en/mysqldump/).
+3. en `/var/lib/vz/vzdump/backups` esta una copia de los datos que tienen las máquinas
 virtuales en sus volúmenes lógicos asociados.
 
 El primer punto parece confirmado porque en `/etc/cron.d/vzdump` hay
 una orden semanal para ejecutar `vzdump --mailto vzdump --mailnotification failure --all 1 --quiet 1 --storage backups --mode snapshot --compress gzip`
 
-El segundo punto **casi** parece confirmado porque en `/etc/cron.d/backup_rsync`
+El segundo punto parece confirmado porque en la máquina `mysql`,
+concretamente en `/etc/cron.d/mysql_backup`, hay una llamada `/root/scripts/mysql_backup.sh`
+diaria que deja la salida en `/var/backups/mysql`, el cual
+esta montado sobre `/var/lib/vz/vzdump/mysql` de la máquina princial.
+
+El tercer punto **casi** parece confirmado porque en `/etc/cron.d/backup_rsync`
 hay una orden diaria para ejecutar [`/root/scripts/backup_rsync.sh`, un script
 que hace copias en `/var/lib/vz/vzdump/backups` de los volúmenes lógicos.
 ¿Pero por qué he dicho **casi**? Porque la citada orden `cron` esta comentada
 así que no se ejecuta nunca.
 
 Nota: dejo una [copia de `backup_rsync.sh`](/servers/hetzner/backup_rsync.sh)
+y una [copia de `mysql_backup.sh`](/servers/mysql/mysql_backup.sh)
 en este repositorio a efectos de documentación.
 
 Aún así, después de buscar y buscar documentación y respuestas sin éxito,
-me quedo con que las dos patas del `backup` son [`vzdump`](https://pve.proxmox.com/pve-docs/vzdump.1.html)
-y `backup_rsync.sh` porque si no es imposible avanzar.
+me quedo con que [`vzdump`](https://pve.proxmox.com/pve-docs/vzdump.1.html),
+`backup_rsync.sh` y `mysql_backup.sh` es lo esencial del `backup`.
 
 Por lo tanto descomento la orden `cron` que ejecuta `backup_rsync.sh`
 
 En `/var/lib/vz` hay mucho más carpetas y contenido a parte de
-`/var/lib/vz/vzdump/dump` y `/var/lib/vz/vzdump/backups` pero como
-no hay documentación ni respuestas no he podido llegar a ninguna conclusión
-sobre él.
+`/var/lib/vz/vzdump/dump`, `/var/lib/vz/vzdump/backups`  y `/var/lib/vz/vzdump/mysql`
+pero como no hay documentación ni respuestas no he podido
+llegar a ninguna conclusión sobre él.
 
 ## Sobre ovh
 
@@ -111,20 +118,21 @@ Si quieres llevártelo todo, incluso lo que no sabemos ni que es, haz:
 # rsync -avzh --delete rhetzner:/var/lib/vz/ full-backup/
 ```
 
-## Descarga completa de /var/lib/vz/vzdump/dump y /var/lib/vz/vzdump/backups
+## Descarga completa de /var/lib/vz/vzdump/{dump,backups,mysql}
 
-Espacio necesario: **273 GB**.
+Espacio necesario: **340 GB**.
 
 Si quieres llevártelo solo lo que creemos saber que es haz:
 
 ```console
 # rsync -avzh --delete rhetzner:/var/lib/vz/vzdump/dump/ full-backup-conf/
 # rsync -avzh --delete rhetzner:/var/lib/vz/vzdump/backups/ full-backup-data/
+# rsync -avzh --delete rhetzner:/var/lib/vz/vzdump/mysql/ full-backup-mysql/
 ```
 
-## Descarga filtrada de /var/lib/vz/vzdump/dump y /var/lib/vz/vzdump/backups
+## Descarga filtrada de /var/lib/vz/vzdump/{dump,backups,mysql}
 
-Espacio necesario: **95 GB**.
+Espacio necesario: **83 GB**.
 
 Si no te sobra el espacio y confiás en que se lo que hago puedes usar el
 script [`rsync.sh`](/rsync.sh) de este proyecto que se encarga de solo descargar
@@ -137,9 +145,11 @@ e ignora el resto (ya que en `/var/lib/vz/vzdump/dump` hay varias copias)
 * Descarga en `./data/` todo `/var/lib/vz/vzdump/backups` menos logs, caches
 de wordpress, carpetas `old` o `backup`, archivos html de `mailman`
 (pues se pueden regenerar con [`arch`](https://wiki.list.org/DOC/4.09%20Summary%20of%20the%20mailman%20bin%20commands)) y los volúmenes
-de la máquina `102-caribu3` porque solo tiene logs,
+de la máquina `101-mysql` porque nos basta con la copia `mysqldump`,
+`102-caribu3` porque solo tiene logs,
 `109-jitsi` y `130-stats` porque no he conseguido que alguien me
 conteste si se usa.
+* Descarga a `./mysql/` la última copia de seguridad hecha con `mysqldump`
 * Descarga a `./conf/hetzner` algunos ficheros relevantes de la máquina principal
 
 Adicionalmente, para que sea más sencillo ver que te estas descargando,
@@ -154,19 +164,3 @@ las carpetas que por cuyo nombre y ubicación parecen ser
 páginas webs y creará un enlace simbólico a cada una de ellas
 en `./wwww` para que fácilmente puedas ver que webs has recuperado
 como mínimo.
-
-## Descargar bases de datos con mysqldump
-
-Espacio necesario: **4.5 GB**.
-
-Aunque en todas las opciones anteriores se descargara `/mysql/`
-(que es donde están los `frm`, `ibd`, etc) es recomendable
-tener una copia de las bases de datos en sql
-hecha con [`mysqldump`](https://mariadb.com/kb/en/mysqldump/)
-
-Para ello ejecuta el script [`mysqldump.sh`](/mysqldump.sh) que
-guarda en:
-
-* `./mysql/users_grants.sql.gz` los usuarios y sus permisos
-* `./mysql/XXXXX.sql.gz` la base de datos XXXXX para cualquier
-XXXXX que no sea `mysql`,  `information_schema` y `performance_schema`.

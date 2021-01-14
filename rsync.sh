@@ -8,7 +8,7 @@ echo "rsync rhetzner:/var/lib/vz/vzdump/dump/ conf/vzdump/"
 
 echo "" > conf/exclude.txt
 ssh rhetzner 'find /var/lib/vz/vzdump/dump -name *.tar.gz' | sed -E 's|^/var/lib/vz/vzdump/dump/\|\.tar\.gz$||g' | sort -r | perl -lne 'if ((defined $l) && index($_, $l)==0) {print "/" . $_ . "*"} $l=substr($_, 0, 15);' | sort >> conf/exclude.txt
-rsync -azh --delete --delete-excluded --exclude-from="conf/exclude.txt" rhetzner:/var/lib/vz/vzdump/dump/ conf/vzdump/
+rsync --info=progress2 -azh --delete --delete-excluded --exclude-from="conf/exclude.txt" rhetzner:/var/lib/vz/vzdump/dump/ conf/vzdump/
 
 find -L conf/ -maxdepth 2 -type l -name "vzdump-*.tar.gz" -execdir realpath . \; | xargs rm -R 2>/dev/null
 for gz in conf/vzdump/*.tar.gz; do
@@ -33,11 +33,12 @@ for gz in conf/vzdump/*.tar.gz; do
 done
 
 echo "rsync rhetzner:/ conf/hetzner"
-rsync -azh --delete --delete-excluded --filter="merge conf/hetzner.txt" rhetzner:/ conf/hetzner
+rsync --info=progress2 -azh --delete --delete-excluded --filter="merge conf/hetzner.txt" rhetzner:/ conf/hetzner
 
 find conf -type d -empty -delete
 
-cat > exclude.data.txt <<EOL
+cat > exclude.txt <<EOL
+/101
 /102
 /106/apachelog
 /107/apachelog
@@ -73,14 +74,25 @@ cat > exclude.data.txt <<EOL
 */wp-content/managewp
 */wp-content/upgrade
 EOL
-ssh rhetzner 'find /var/lib/vz/vzdump/backups/104/mailman/archives/ -name index.html' | sed -E 's|^/var/lib/vz/vzdump/backups/\|/index.html$||g' | sort | perl -lne 'if ((not defined $l) || index($_, $l)==-1) {$l=$_ . "/"; print "/" . $_}' >> exclude.data.txt
+ssh rhetzner 'find /var/lib/vz/vzdump/backups/104/mailman/archives/ -name index.html' | sed -E 's|^/var/lib/vz/vzdump/backups/\|/index.html$||g' | sort | perl -lne 'if ((not defined $l) || index($_, $l)==-1) {$l=$_ . "/"; print "/" . $_}' >> exclude.txt
 
 echo "rsync rhetzner:/var/lib/vz/vzdump/backups/ data/"
-rsync -azh --delete --delete-excluded --exclude-from=exclude.data.txt rhetzner:/var/lib/vz/vzdump/backups/ data/
-mv exclude.data.txt data/exclude.txt
+rsync --info=progress2 -azh --delete --delete-excluded --exclude-from=exclude.txt rhetzner:/var/lib/vz/vzdump/backups/ data/
+mv exclude.txt data/exclude.txt
+
+echo "rsync rhetzner:/var/lib/vz/vzdump/mysql/ mysql/"
+
+echo "" > rsync.txt
+ssh rhetzner 'find /var/lib/vz/vzdump/mysql -name *.sql.gz' | sed -E 's|^/var/lib/vz/vzdump/mysql/||g' | sort -r | perl -lne 'if ((defined $l) && index($_, $l)==11) {print "- /" . $_} $l=substr($_, 11);' | sort >> rsync.txt
+echo "+ /**.sql.gz" >> rsync.txt
+echo "- /*" >> rsync.txt
+rsync --info=progress2 -azh --delete --delete-excluded --filter="merge rsync.txt" rhetzner:/var/lib/vz/vzdump/mysql/ mysql/
+mv rsync.txt mysql/rsync.txt
 
 rm -R www 2> /dev/null
 mkdir www
 cd www
 find .. -maxdepth 4 -regex ".*/[0-9][0-9][0-9]/www/.*\.net" -exec ln -s {} \;
 cd ..
+
+du -hs .
