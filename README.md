@@ -118,19 +118,19 @@ Si quieres llevártelo todo, incluso lo que no sabemos ni que es, haz:
 # rsync -avzh --delete rhetzner:/var/lib/vz/ full-backup/
 ```
 
-## Descarga completa de /var/lib/vz/vzdump/{dump,backups,mysql}
+## Descarga completa de /var/lib/vz/vzdump/{backups,dump,mysql}
 
 Espacio necesario: **340 GB**.
 
 Si quieres llevártelo solo lo que creemos saber que es haz:
 
 ```console
-# rsync -avzh --delete rhetzner:/var/lib/vz/vzdump/dump/ full-backup-conf/
 # rsync -avzh --delete rhetzner:/var/lib/vz/vzdump/backups/ full-backup-data/
+# rsync -avzh --delete rhetzner:/var/lib/vz/vzdump/dump/ full-backup-conf/
 # rsync -avzh --delete rhetzner:/var/lib/vz/vzdump/mysql/ full-backup-mysql/
 ```
 
-## Descarga filtrada de /var/lib/vz/vzdump/{dump,backups,mysql}
+## Descarga filtrada de /var/lib/vz/vzdump/{backups,dump,mysql}
 
 Espacio necesario: **83 GB**.
 
