@@ -61,7 +61,7 @@ diaria que deja la salida en `/var/backups/mysql`, el cual
 esta montado sobre `/var/lib/vz/vzdump/mysql` de la máquina princial.
 
 El tercer punto **casi** parece confirmado porque en `/etc/cron.d/backup_rsync`
-hay una orden diaria para ejecutar [`/root/scripts/backup_rsync.sh`, un script
+hay una orden diaria para ejecutar `/root/scripts/backup_rsync.sh`, un script
 que hace copias en `/var/lib/vz/vzdump/backups` de los volúmenes lógicos.
 ¿Pero por qué he dicho **casi**? Porque la citada orden `cron` esta comentada
 así que no se ejecuta nunca.
