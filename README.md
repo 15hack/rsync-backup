@@ -96,13 +96,16 @@ y borra los backups antiguos de más de 15 días.
 
 # Descargar backup ovh
 
-Espacio necesario: **66 MB**.
+Espacio necesario: **70 MB**.
 
 Haz:
 
 ```console
-# rsync -avzh --delete ovh:/var/backups/ovh/ ovh-backup/
+# ssh ovh 'find /var/backups/ovh/ -name "*.gz" -exec basename {} \;' | sort -r | perl -lne 'if ((substr($_, 10) ~~ @l)) {print "/" . $_} push(@l, substr($_, 10));' | sort > ovh-exclude.txt
+# rsync -avzh --delete  --delete-excluded --exclude-from="ovh-exclude.txt" ovh:/var/backups/ovh/ ovh-backup/
 ```
+
+Nota: La primera linea sirve para que solo se descargue la última versión de los backups
 
 # Descargar backup hetzner
 
@@ -154,7 +157,7 @@ conteste si se usa.
 
 Adicionalmente, para que sea más sencillo ver que te estas descargando,
 se extraen de los ficheros `./conf/vzdump/*.tar.gz`
-(en una carpeta por maquina bajo bajo `./conf/`)
+(en una carpeta por maquina bajo `./conf/`)
 los archivos y directorios más relevantes
 (`/home/`, `/etc/vzdump/`, `/etc/apache2/` `/root/`, `/etc/nginx/`, `/etc/mysql/`, `/etc/varnish/` y `/etc/hostname`) para hacerse una idea rápida de que tiene cada
 máquina sin tener que estar mirando uno por uno los `tar.gz`.
