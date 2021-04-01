@@ -101,8 +101,9 @@ Espacio necesario: **70 MB**.
 Haz:
 
 ```console
-# ssh ovh 'find /var/backups/ovh/ -name "*.gz" -exec basename {} \;' | sort -r | perl -lne 'if ((substr($_, 10) ~~ @l)) {print "/" . $_} push(@l, substr($_, 10));' | sort > ovh-exclude.txt
-# rsync -avzh --delete  --delete-excluded --exclude-from="ovh-exclude.txt" ovh:/var/backups/ovh/ ovh-backup/
+# ssh ovh 'find /var/backups/ovh/ -name "*.gz" -printf "%P\n"' | sort -r | perl -lne 'if ((substr($_, 10) ~~ @l)) {print "/" . $_} push(@l, substr($_, 10));' | sort > exclude.txt
+# rsync -avzh --delete  --delete-excluded --exclude-from="exclude.txt" ovh:/var/backups/ovh/ ovh-backup/
+# mv exclude.txt ovh-backup/
 ```
 
 Nota: La primera linea sirve para que solo se descargue la última versión de los backups
@@ -167,3 +168,6 @@ las carpetas que por cuyo nombre y ubicación parecen ser
 páginas webs y creará un enlace simbólico a cada una de ellas
 en `./wwww` para que fácilmente puedas ver que webs has recuperado
 como mínimo.
+
+Nota: He añadido al final de [`rsync.sh`](/rsync.sh) unas lineas para
+que descargue también el último backup de ovh.

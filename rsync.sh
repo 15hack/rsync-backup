@@ -7,7 +7,7 @@ VMIDS=($(ssh rhetzner "pct list 2>/dev/null" | grep running | cut -d' ' -f1))
 echo "rsync rhetzner:/var/lib/vz/vzdump/dump/ conf/vzdump/"
 
 echo "" > conf/exclude.txt
-ssh rhetzner 'find /var/lib/vz/vzdump/dump -name *.tar.gz' | sed -E 's|^/var/lib/vz/vzdump/dump/\|\.tar\.gz$||g' | sort -r | perl -lne 'if ((defined $l) && index($_, $l)==0) {print "/" . $_ . "*"} $l=substr($_, 0, 15);' | sort >> conf/exclude.txt
+ssh rhetzner 'find /var/lib/vz/vzdump/dump -name *.tar.gz -printf "%P\n"'| sort -r | perl -lne 'if ((defined $l) && index($_, $l)==0) {print "/" . substr($_, 0, -7) . "*"} $l=substr($_, 0, 15);' | sort >> conf/exclude.txt
 rsync --info=progress2 -azh --delete --delete-excluded --exclude-from="conf/exclude.txt" rhetzner:/var/lib/vz/vzdump/dump/ conf/vzdump/
 
 find -L conf/ -maxdepth 2 -type l -name "vzdump-*.tar.gz" -execdir realpath . \; | xargs rm -R 2>/dev/null
@@ -83,7 +83,7 @@ mv exclude.txt data/exclude.txt
 echo "rsync rhetzner:/var/lib/vz/vzdump/mysql/ mysql/"
 
 echo "" > rsync.txt
-ssh rhetzner 'find /var/lib/vz/vzdump/mysql -name *.sql.gz' | sed -E 's|^/var/lib/vz/vzdump/mysql/||g' | sort -r | perl -lne 'if ((substr($_, 10) ~~ @l)) {print "- /" . $_} push(@l, substr($_, 10));' | sort >> rsync.txt
+ssh rhetzner 'find /var/lib/vz/vzdump/mysql -name *.sql.gz -printf "%P\n"' | sort -r | perl -lne 'if ((substr($_, 10) ~~ @l)) {print "- /" . $_} push(@l, substr($_, 10));' | sort >> rsync.txt
 echo "+ /**.sql.gz" >> rsync.txt
 echo "- /*" >> rsync.txt
 rsync --info=progress2 -azh --delete --delete-excluded --filter="merge rsync.txt" rhetzner:/var/lib/vz/vzdump/mysql/ mysql/
@@ -94,5 +94,10 @@ mkdir www
 cd www
 find .. -maxdepth 4 -regex ".*/[0-9][0-9][0-9]/www/.*\.net" -exec ln -s {} \;
 cd ..
+
+ssh ovh 'find /var/backups/ovh/ -name "*.gz" -printf "%P\n"' | sort -r | perl -lne 'if ((substr($_, 10) ~~ @l)) {print "/" . $_} push(@l, substr($_, 10));' | sort > exclude.txt
+rsync -avzh --delete  --delete-excluded --exclude-from="exclude.txt" ovh:/var/backups/ovh/ ovh-backup/
+mv exclude.txt ovh-backup/
+chmod 755 ovh-backup/
 
 du -hs .
