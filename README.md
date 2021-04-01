@@ -135,7 +135,7 @@ Si quieres llevártelo solo lo que creemos saber que es haz:
 
 ## Descarga filtrada de /var/lib/vz/vzdump/{backups,dump,mysql}
 
-Espacio necesario: **83 GB**.
+Espacio necesario: **84 GB**.
 
 Si no te sobra el espacio y confiás en que se lo que hago puedes usar el
 script [`rsync.sh`](/rsync.sh) de este proyecto que se encarga de solo descargar

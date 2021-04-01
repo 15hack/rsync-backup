@@ -83,7 +83,7 @@ mv exclude.txt data/exclude.txt
 echo "rsync rhetzner:/var/lib/vz/vzdump/mysql/ mysql/"
 
 echo "" > rsync.txt
-ssh rhetzner 'find /var/lib/vz/vzdump/mysql -name *.sql.gz' | sed -E 's|^/var/lib/vz/vzdump/mysql/||g' | sort -r | perl -lne 'if ((defined $l) && index($_, $l)==11) {print "- /" . $_} $l=substr($_, 11);' | sort >> rsync.txt
+ssh rhetzner 'find /var/lib/vz/vzdump/mysql -name *.sql.gz' | sed -E 's|^/var/lib/vz/vzdump/mysql/||g' | sort -r | perl -lne 'if ((substr($_, 10) ~~ @l)) {print "- /" . $_} push(@l, substr($_, 10));' | sort >> rsync.txt
 echo "+ /**.sql.gz" >> rsync.txt
 echo "- /*" >> rsync.txt
 rsync --info=progress2 -azh --delete --delete-excluded --filter="merge rsync.txt" rhetzner:/var/lib/vz/vzdump/mysql/ mysql/
