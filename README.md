@@ -5,16 +5,16 @@ También intentará explicar como esta estructurado el `backup`.
 
 # Requisitos
 
-*1-* Tener usuario `root` o `sudo` en tu máquina local para
+**1-** Tener usuario `root` o `sudo` en tu máquina local para
 ejecutar con él `rsync` y/o los `scripts` que proporciona este proyecto
 a fin de que la copia de ficheros pueda preservar los permisos,
 usuarios y grupos de origen.
 
-*2-* Tener acceso `root` a la máquina principal de `hetzner`
+**2-** Tener acceso `root` a la máquina principal de `hetzner`
 vía `ssh` con clave privada y estando
 configurado en tu `/root/.ssh/config` en una entrada llamada `rhetzner`
 
-*3-* Tener acceso a la máquina `ovh` con un usuario que este en
+**3-** Tener acceso a la máquina `ovh` con un usuario que este en
 el grupo rootbackup vía `ssh` con clave privada y estando
 configurado en tu `/root/.ssh/config` en una entrada llamada `ovh`
 
