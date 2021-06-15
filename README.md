@@ -164,7 +164,7 @@ los archivos y directorios más relevantes
 máquina sin tener que estar mirando uno por uno los `tar.gz`.
 
 El script también buscara en las configuraciones de las máquinas
-las carpetas que por cuyo nombre y ubicación parecen ser
+las carpetas cuyo nombre y ubicación aparenten ser
 páginas webs y creará un enlace simbólico a cada una de ellas
 en `./wwww` para que fácilmente puedas ver que webs has recuperado
 como mínimo.
