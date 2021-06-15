@@ -24,7 +24,7 @@ for gz in conf/vzdump/*.tar.gz; do
       mkdir -p "$TRG"
       echo "tar $NMGZ $TRG"
       #--exclude="*/.git" --exclude="*/.svn" --exclude="./home/*/.*" --exclude="./root/.*"
-      tar --wildcards --exclude-backups --exclude-vcs --exclude-caches-all --exclude-from="conf/exclude.tar.txt" --same-owner -p -xf "$gz" -C "$TRG" ./home/ ./etc/vzdump/ ./etc/apache2/ ./root/ ./etc/nginx/ ./etc/mysql/ ./etc/varnish/ ./etc/hostname ./etc/cron*
+      tar --wildcards --exclude-backups --exclude-vcs --exclude-caches-all --exclude-from="conf/exclude.tar.txt" --same-owner -p -xf "$gz" -C "$TRG" ./home/ ./etc/vzdump/ ./etc/apache2/ ./root/ ./etc/nginx/ ./etc/mysql/ ./etc/varnish/ ./etc/hostname ./etc/cron* /var/spool/cron/crontabs/
       pushd "$TRG" > /dev/null
       ln -s "../vzdump/$NMGZ"
       popd > /dev/null
