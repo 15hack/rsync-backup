@@ -5,16 +5,16 @@ También intentará explicar como esta estructurado el `backup`.
 
 # Requisitos
 
-*1-* Tener usuario `root` o `sudo` en tu máquina local para
+**1-** Tener usuario `root` o `sudo` en tu máquina local para
 ejecutar con él `rsync` y/o los `scripts` que proporciona este proyecto
 a fin de que la copia de ficheros pueda preservar los permisos,
 usuarios y grupos de origen.
 
-*2-* Tener acceso `root` a la máquina principal de `hetzner`
+**2-** Tener acceso `root` a la máquina principal de `hetzner`
 vía `ssh` con clave privada y estando
 configurado en tu `/root/.ssh/config` en una entrada llamada `rhetzner`
 
-*3-* Tener acceso a la máquina `ovh` con un usuario que este en
+**3-** Tener acceso a la máquina `ovh` con un usuario que este en
 el grupo rootbackup vía `ssh` con clave privada y estando
 configurado en tu `/root/.ssh/config` en una entrada llamada `ovh`
 
@@ -35,7 +35,7 @@ No existe documentación ni más información.
 
 En las máquinas se pueden
 encontrar numerosos `scripts` con nombres que contienen la palabra
-`backup` o similar, siendo obvio que no todos deben funcionar
+`backup` o similar, siendo obvio que no todos pueden funcionar
 y debe haber copias antiguas obsoletas. Por lo tanto es
 muy difícil saber cual es código correcto o cómo funciona cualquier cosa.
 
@@ -76,10 +76,10 @@ me quedo con que [`vzdump`](https://pve.proxmox.com/pve-docs/vzdump.1.html),
 
 Por lo tanto descomento la orden `cron` que ejecuta `backup_rsync.sh`
 
-En `/var/lib/vz` hay mucho más carpetas y contenido a parte de
+En `/var/lib/vz` hay muchas más carpetas y contenido a parte de
 `/var/lib/vz/vzdump/dump`, `/var/lib/vz/vzdump/backups`  y `/var/lib/vz/vzdump/mysql`
 pero como no hay documentación ni respuestas no he podido
-llegar a ninguna conclusión sobre él.
+llegar a ninguna conclusión sobre ello.
 
 ## Sobre ovh
 
@@ -164,7 +164,7 @@ los archivos y directorios más relevantes
 máquina sin tener que estar mirando uno por uno los `tar.gz`.
 
 El script también buscara en las configuraciones de las máquinas
-las carpetas que por cuyo nombre y ubicación parecen ser
+las carpetas cuyo nombre y ubicación aparenten ser
 páginas webs y creará un enlace simbólico a cada una de ellas
 en `./wwww` para que fácilmente puedas ver que webs has recuperado
 como mínimo.
