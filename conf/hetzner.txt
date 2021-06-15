@@ -17,4 +17,5 @@
 + /etc/hostname
 + /etc/pve/
 + /etc/pve/*.cron
++ /var/spool/cron/crontabs/*
 - /**

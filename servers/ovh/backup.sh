@@ -19,7 +19,7 @@ fi
 DATE=$(date +%Y-%m-%d)
 
 echo "tar $DATE-files.tar.gz"
-tar -czpf "$TRG/$DATE-files.tar.gz" /usr/share/nginx/www/ /etc/nginx/ /root/ /etc/cron* /etc/mysql
+tar -czpf "$TRG/$DATE-files.tar.gz" /usr/share/nginx/www/ /etc/nginx/ /root/ /etc/cron* /etc/mysql /root/p.gpg /usr/bin/gpgnano /var/spool/cron/crontabs/
 echo "USERS GRANTS - > users_grants.sql"
 pt-show-grants | gzip -9 > "$TRG/$DATE-users_grants.sql.gz"
 DBS=($(mysql -N -e "show databases;"))
