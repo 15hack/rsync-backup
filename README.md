@@ -76,10 +76,10 @@ me quedo con que [`vzdump`](https://pve.proxmox.com/pve-docs/vzdump.1.html),
 
 Por lo tanto descomento la orden `cron` que ejecuta `backup_rsync.sh`
 
-En `/var/lib/vz` hay mucho más carpetas y contenido a parte de
+En `/var/lib/vz` hay muchas más carpetas y contenido a parte de
 `/var/lib/vz/vzdump/dump`, `/var/lib/vz/vzdump/backups`  y `/var/lib/vz/vzdump/mysql`
 pero como no hay documentación ni respuestas no he podido
-llegar a ninguna conclusión sobre él.
+llegar a ninguna conclusión sobre ello.
 
 ## Sobre ovh
 
