@@ -35,7 +35,7 @@ No existe documentación ni más información.
 
 En las máquinas se pueden
 encontrar numerosos `scripts` con nombres que contienen la palabra
-`backup` o similar, siendo obvio que no todos deben funcionar
+`backup` o similar, siendo obvio que no todos puenden funcionar
 y debe haber copias antiguas obsoletas. Por lo tanto es
 muy difícil saber cual es código correcto o cómo funciona cualquier cosa.
 
