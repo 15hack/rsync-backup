@@ -5,7 +5,7 @@ También intentará explicar como esta estructurado el `backup`.
 
 **NOTA**: En realidad lo que llamamos `servidor ovh` es un `vhost` alojado en `hetzner`.
 Me refiero a ella como `ovh` porque antes se encontraba en dicho proveedor,
-y para diferenciarla del servidor principal (`hetzner` a secas) que es una máquina dedicada en vez de un `vhost`.
+y para diferenciarla del servidor principal (`hetzner` a secas) que es una máquina dedicada y no un `vhost`.
 
 # Requisitos
 
