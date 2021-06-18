@@ -3,6 +3,10 @@ del servidor de `hetzner` y `ovh`.
 
 También intentará explicar como esta estructurado el `backup`.
 
+**NOTA**: En realidad la que llamamos `servidor ovh` es un `vhost` alojado en `hetzner`.
+Me refiero a ella como `ovh` porque antes se encontraba en dicho proveedor,
+y para diferenciarla del servidor dedicado principal que esta en `hetzner`.
+
 # Requisitos
 
 **1-** Tener usuario `root` o `sudo` en tu máquina local para
