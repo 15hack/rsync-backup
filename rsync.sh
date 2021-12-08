@@ -8,6 +8,7 @@ echo "rsync rhetzner:/var/lib/vz/vzdump/dump/ conf/vzdump/"
 
 echo "" > conf/exclude.txt
 ssh rhetzner 'find /var/lib/vz/vzdump/dump -name *.tar.gz -printf "%P\n"'| sort -r | perl -lne 'if ((defined $l) && index($_, $l)==0) {print "/" . substr($_, 0, -7) . "*"} $l=substr($_, 0, 15);' | sort >> conf/exclude.txt
+ssh rhetzner 'find /var/lib/vz/vzdump/dump -mtime +1460 -name *.tar.gz -printf "%P\n"' | sort | sed 's|.tar.gz|*|' >> conf/exclude.txt
 rsync --info=progress2 -azh --delete --delete-excluded --exclude-from="conf/exclude.txt" rhetzner:/var/lib/vz/vzdump/dump/ conf/vzdump/
 
 find -L conf/ -maxdepth 2 -type l -name "vzdump-*.tar.gz" -execdir realpath . \; | xargs rm -R 2>/dev/null

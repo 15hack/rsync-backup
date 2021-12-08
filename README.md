@@ -57,7 +57,13 @@ en un fichero `tar.gz` por máquina.
 virtuales en sus volúmenes lógicos asociados.
 
 El primer punto parece confirmado porque en `/etc/cron.d/vzdump` hay
-una orden semanal para ejecutar `vzdump --mailto vzdump --mailnotification failure --all 1 --quiet 1 --storage backups --mode snapshot --compress gzip`
+una orden semanal para ejecutar
+
+```
+vzdump --mailto vzdump --mailnotification failure --all 1 --quiet 1 --storage backups --mode snapshot --compress gzip
+```
+
+NOTA: el resto de parámetros que se aplican están en `/etc/vzdump.conf`.
 
 El segundo punto parece confirmado porque en la máquina `mysql`,
 concretamente en `/etc/cron.d/mysql_backup`, hay una llamada `/root/scripts/mysql_backup.sh`
@@ -70,8 +76,9 @@ que hace copias en `/var/lib/vz/vzdump/backups` de los volúmenes lógicos.
 ¿Pero por qué he dicho **casi**? Porque la citada orden `cron` esta comentada
 así que no se ejecuta nunca.
 
-Nota: dejo una [copia de `backup_rsync.sh`](/servers/hetzner/backup_rsync.sh)
-y una [copia de `mysql_backup.sh`](/servers/mysql/mysql_backup.sh)
+NOTA: dejo una [copia de `backup_rsync.sh`](/servers/hetzner/backup_rsync.sh),
+una [copia de `mysql_backup.sh`](/servers/mysql/mysql_backup.sh)
+y una [copia de `vzdump.conf`](/servers/hetzner/vzdump.conf)
 en este repositorio a efectos de documentación.
 
 Aún así, después de buscar y buscar documentación y respuestas sin éxito,
@@ -140,7 +147,7 @@ Si quieres llevártelo solo lo que creemos saber que es haz:
 
 ## Descarga filtrada de /var/lib/vz/vzdump/{backups,dump,mysql}
 
-Espacio necesario: **84 GB**.
+Espacio necesario: **78 GB**.
 
 Si no te sobra el espacio y confiás en que se lo que hago puedes usar el
 script [`rsync.sh`](/rsync.sh) de este proyecto que se encarga de solo descargar
@@ -149,7 +156,9 @@ aquello que creo que realmente hace falta.
 Este script lo que hace es:
 
 * Descarga en `./conf/vzdump` la última copia de seguridad hecha con `vzdump`
-e ignora el resto (ya que en `/var/lib/vz/vzdump/dump` hay varias copias)
+e ignora el resto (ya que en `/var/lib/vz/vzdump/dump` hay varias copias) y las
+que tengan más de 4 años (el último backup de la máquina `105` y `202` es de 2017 así
+que ya no existen y supongo que no tiene sentido seguir guardándolo)
 * Descarga en `./data/` todo `/var/lib/vz/vzdump/backups` menos:
     * logs, caches de wordpress, carpetas `old` o `backup`
     * archivos html de `mailman` (pues se pueden regenerar con [`arch`](https://wiki.list.org/DOC/4.09%20Summary%20of%20the%20mailman%20bin%20commands))
