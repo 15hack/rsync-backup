@@ -4,7 +4,7 @@ del servidor de `hetzner` y `ovh`.
 También intentará explicar como esta estructurado el `backup`.
 
 **NOTA**: En realidad lo que llamamos `servidor ovh` es un `vhost` alojado en `hetzner`.
-Me refiero a ella como `ovh` porque antes se encontraba en dicho proveedor,
+Me refiero a él como `ovh` porque antes se encontraba en dicho proveedor,
 y para diferenciarla del servidor principal (`hetzner` a secas) que es una máquina dedicada y no un `vhost`.
 
 # Requisitos
@@ -62,7 +62,7 @@ una orden semanal para ejecutar `vzdump --mailto vzdump --mailnotification failu
 El segundo punto parece confirmado porque en la máquina `mysql`,
 concretamente en `/etc/cron.d/mysql_backup`, hay una llamada `/root/scripts/mysql_backup.sh`
 diaria que deja la salida en `/var/backups/mysql`, el cual
-esta montado sobre `/var/lib/vz/vzdump/mysql` de la máquina princial.
+esta montado sobre `/var/lib/vz/vzdump/mysql` de la máquina principal.
 
 El tercer punto **casi** parece confirmado porque en `/etc/cron.d/backup_rsync`
 hay una orden diaria para ejecutar `/root/scripts/backup_rsync.sh`, un script
@@ -87,7 +87,7 @@ llegar a ninguna conclusión sobre ello.
 
 ## Sobre ovh
 
-A fecha de 2021-01-13 la última información que tennía
+A fecha de 2021-01-13 la última información que tenía
 es que en esta máquina no hay nada similar a lo que hay en `hetzner`,
 es decir, no hay backup.
 
@@ -150,13 +150,12 @@ Este script lo que hace es:
 
 * Descarga en `./conf/vzdump` la última copia de seguridad hecha con `vzdump`
 e ignora el resto (ya que en `/var/lib/vz/vzdump/dump` hay varias copias)
-* Descarga en `./data/` todo `/var/lib/vz/vzdump/backups` menos logs, caches
-de wordpress, carpetas `old` o `backup`, archivos html de `mailman`
-(pues se pueden regenerar con [`arch`](https://wiki.list.org/DOC/4.09%20Summary%20of%20the%20mailman%20bin%20commands)) y los volúmenes
-de la máquina `101-mysql` porque nos basta con la copia `mysqldump`,
-`102-caribu3` porque solo tiene logs,
-`109-jitsi` y `130-stats` porque no he conseguido que alguien me
-conteste si se usa.
+* Descarga en `./data/` todo `/var/lib/vz/vzdump/backups` menos:
+    * logs, caches de wordpress, carpetas `old` o `backup`
+    * archivos html de `mailman` (pues se pueden regenerar con [`arch`](https://wiki.list.org/DOC/4.09%20Summary%20of%20the%20mailman%20bin%20commands))
+    * volumen de la máquina `101-mysql` porque nos basta con la copia `mysqldump`
+    * volumen de la máquina `102-caribu3` porque solo tiene logs
+    * volumen de la máquina `109-jitsi` y `130-stats` porque no he conseguido que alguien me conteste si se usa
 * Descarga a `./mysql/` la última copia de seguridad hecha con `mysqldump`
 * Descarga a `./conf/hetzner` algunos ficheros relevantes de la máquina principal
 
@@ -164,7 +163,8 @@ Adicionalmente, para que sea más sencillo ver que te estas descargando,
 se extraen de los ficheros `./conf/vzdump/*.tar.gz`
 (en una carpeta por maquina bajo `./conf/`)
 los archivos y directorios más relevantes
-(`/home/`, `/etc/vzdump/`, `/etc/apache2/` `/root/`, `/etc/nginx/`, `/etc/mysql/`, `/etc/varnish/` y `/etc/hostname`) para hacerse una idea rápida de que tiene cada
+(`/home/`, `/etc/vzdump/`, `/etc/apache2/` `/root/`, `/etc/nginx/`, `/etc/mysql/`, `/etc/varnish/` y `/etc/hostname`)
+para hacerse una idea rápida de que tiene cada
 máquina sin tener que estar mirando uno por uno los `tar.gz`.
 
 El script también buscara en las configuraciones de las máquinas
@@ -173,5 +173,5 @@ páginas webs y creará un enlace simbólico a cada una de ellas
 en `./wwww` para que fácilmente puedas ver que webs has recuperado
 como mínimo.
 
-Nota: He añadido al final de [`rsync.sh`](/rsync.sh) unas lineas para
+**NOTA**: He añadido al final de [`rsync.sh`](/rsync.sh) unas lineas para
 que descargue también el último backup de ovh.
