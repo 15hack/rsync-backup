@@ -165,8 +165,8 @@ que ya no existen y supongo que no tiene sentido seguir guardándolo)
     * volumen de la máquina `101-mysql` porque nos basta con la copia `mysqldump`
     * volumen de la máquina `102-caribu3` porque solo tiene logs
     * volumen de la máquina `109-jitsi` y `130-stats` porque no he conseguido que alguien me conteste si se usa
-* Descarga a `./mysql/` la última copia de seguridad hecha con `mysqldump`
-* Descarga a `./conf/hetzner` algunos ficheros relevantes de la máquina principal
+* Descarga en `./mysql/` la última copia de seguridad hecha con `mysqldump`
+* Descarga en `./conf/hetzner` algunos ficheros relevantes de la máquina principal
 
 Adicionalmente, para que sea más sencillo ver que te estas descargando,
 se extraen de los ficheros `./conf/vzdump/*.tar.gz`
