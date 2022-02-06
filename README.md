@@ -98,7 +98,7 @@ A fecha de 2021-01-13 la última información que tenía
 es que en esta máquina no hay nada similar a lo que hay en `hetzner`,
 es decir, no hay backup.
 
-Para paliar esta carencia se crea el script [`backup.sh`](/servers/ovh/backup.sh)
+Para subsanar esta carencia se crea el script [`backup.sh`](/servers/ovh/backup.sh)
 que salva los ficheros de las webs, la configuración `nginx`, las bases de datos
 y poco más.
 
