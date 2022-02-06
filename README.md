@@ -35,7 +35,7 @@ es la siguiente:
 
 > Explicar todo el sistema es un poco complicado, pero básicamente estoy revisando que los backups se almacenen en /var/lib/vz. La idea es que cualquiera que tenga permiso de lectura en esa ruta pueda hacer rsync en varias vaces (son muchos GB) para ir teniendo cada una su copia local. Voy a hacer limpieza y os voy contando.
 
-No existe documentación ni más información.
+No existe documentación ni más información, y el `os voy contando` quedo en nada.
 
 En las máquinas se pueden
 encontrar numerosos `scripts` con nombres que contienen la palabra
